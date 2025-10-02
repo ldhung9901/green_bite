@@ -6,6 +6,7 @@ import '../models/food_item.dart';
 import '../models/tag.dart';
 import '../services/database_service.dart';
 import '../services/permission_service.dart';
+import '../services/image_service.dart';
 import 'tag_management_screen.dart';
 
 class AddEditFoodScreen extends StatefulWidget {
@@ -168,9 +169,19 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
       final XFile? image = await picker.pickImage(source: source, maxWidth: 800, maxHeight: 800, imageQuality: 70);
 
       if (image != null) {
-        setState(() {
-          _imagePath = image.path;
-        });
+        // Save the image to persistent storage
+        final persistentPath = await ImageService.saveImage(image.path);
+        if (persistentPath != null) {
+          setState(() {
+            _imagePath = persistentPath;
+          });
+        } else {
+          // Fallback to temporary path if persistent save fails
+          setState(() {
+            _imagePath = image.path;
+          });
+          print('Warning: Failed to save image to persistent storage, using temporary path');
+        }
       }
     } catch (e) {
       print('Lỗi khi chọn ảnh: $e');
@@ -209,6 +220,13 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
 
       if (_isEditing) {
         foodItem.id = widget.foodItem!.id;
+
+        // If the image path has changed, delete the old image
+        final oldImagePath = widget.foodItem!.imagePath;
+        if (oldImagePath != null && oldImagePath != _imagePath) {
+          await ImageService.deleteImage(oldImagePath);
+        }
+
         await _databaseService.updateFoodItem(foodItem);
       } else {
         await _databaseService.insertFoodItem(foodItem);
@@ -232,7 +250,7 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
       headers: [
         AppBar(
           title: Text(_isEditing ? 'Chỉnh sửa thực phẩm' : 'Thêm thực phẩm'),
-          subtitle: Text(_isEditing ? 'Cập nhật thông tin' : 'Tạo mục mới'),
+          // subtitle: Text(_isEditing ? 'Cập nhật thông tin' : 'Tạo mục mới'),
           leading: [OutlineButton(density: ButtonDensity.icon, onPressed: () => Navigator.of(context).pop(), child: const Icon(Icons.arrow_back))],
           trailing: [if (!_isLoading) OutlineButton(density: ButtonDensity.icon, onPressed: _saveFoodItem, child: const Icon(Icons.check))],
         ),
@@ -251,7 +269,7 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-                      child: _imagePath != null
+                      child: _imagePath != null && _imageFileExists(_imagePath!)
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(12),
                               child: Image.file(
@@ -260,6 +278,7 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
                                 height: 120,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
+                                  print('Error loading image $_imagePath: $error');
                                   return const Icon(Icons.restaurant, size: 48);
                                 },
                               ),
@@ -361,12 +380,12 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
                         const Gap(16),
 
                         // Description Field
-                        FormField(
-                          key: _descriptionKey,
-                          label: const Text('Mô tả'),
-                          child: TextArea(placeholder: const Text('Mô tả thực phẩm (tùy chọn)...'), controller: _descriptionController, expandableHeight: true, initialHeight: 180),
-                        ),
-                        const Gap(16),
+                        // FormField(
+                        //   key: _descriptionKey,
+                        //   label: const Text('Mô tả'),
+                        //   child: TextArea(placeholder: const Text('Mô tả thực phẩm (tùy chọn)...'), controller: _descriptionController, expandableHeight: true, initialHeight: 180),
+                        // ),
+                        // const Gap(16),
 
                         // Quantity and Unit Fields
                         const Text('Số lượng & Đơn vị'),
@@ -533,7 +552,7 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
                                           Text('Đang lưu...'),
                                         ],
                                       )
-                                    : Text(_isEditing ? 'Cập nhật' : 'Lưu thực phẩm'),
+                                    : Text(_isEditing ? 'Cập nhật' : 'Thêm mới'),
                               ),
                             );
                           },
@@ -545,6 +564,15 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
               ),
             ),
     );
+  }
+
+  bool _imageFileExists(String path) {
+    try {
+      return File(path).existsSync();
+    } catch (e) {
+      print('Error checking image file existence: $e');
+      return false;
+    }
   }
 
   @override

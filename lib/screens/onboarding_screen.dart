@@ -14,7 +14,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
   final PageController _pageController = PageController();
 
-  final List<OnboardingPage> _pages = [OnboardingPage(icon: Icons.stacked_bar_chart, title: "Chào mừng bạn đến với GreenBite", description: "Tủ lạnh thông tin trong chiếc điện thoại của bạn", color: Colors.blue), OnboardingPage(icon: Icons.notifications, title: "Nhắc nhở hết hạn", description: "Nhận thông báo khi thực phẩm sắp hết hạn để không bỏ lỡ", color: Colors.orange), OnboardingPage(icon: Icons.camera_alt, title: "Nhập liệu OCR", description: "Chụp ảnh nhãn sản phẩm để tự động nhận diện thông tin", color: Colors.green), OnboardingPage(icon: Icons.check_circle, title: "Sẵn sàng bắt đầu", description: "Hãy bắt đầu quản lý thực phẩm của bạn ngay hôm nay!", color: Colors.purple)];
+  final List<OnboardingPage> _pages = [OnboardingPage(icon: LucideIcons.rows3, title: "Chào mừng bạn đến với GreenBite", description: "Tủ lạnh thông minh trong chiếc điện thoại của bạn", color: Colors.green)];
 
   void _nextPage() {
     if (_currentPage < _pages.length - 1) {

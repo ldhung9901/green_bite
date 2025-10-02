@@ -3,6 +3,7 @@ import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/food_item.dart';
 import '../models/tag.dart';
+import 'image_service.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -72,9 +73,18 @@ class DatabaseService {
 
   Future<void> deleteFoodItem(int id) async {
     final isar = await database;
+
+    // Get the item first to check if it has an image
+    final item = await isar.foodItems.get(id);
+
     await isar.writeTxn(() async {
       await isar.foodItems.delete(id);
     });
+
+    // Delete the associated image file if it exists
+    if (item?.imagePath != null) {
+      await ImageService.deleteImage(item!.imagePath!);
+    }
   }
 
   Future<FoodItem?> getFoodItemById(int id) async {
