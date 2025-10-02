@@ -95,8 +95,8 @@ class _FoodListScreenState extends State<FoodListScreen> {
 
   NavigationItem _buildNavItem(String label, IconData icon) {
     return NavigationItem(
-      style: const ButtonStyle.muted(density: ButtonDensity.icon),
-      selectedStyle: const ButtonStyle.fixed(density: ButtonDensity.icon),
+      style: const ButtonStyle.muted(density: ButtonDensity.compact),
+      selectedStyle: const ButtonStyle.fixed(density: ButtonDensity.compact),
       label: Text(label),
       child: Icon(icon),
     );
@@ -140,6 +140,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
         const Divider(),
         NavigationBar(
           labelType: NavigationLabelType.all,
+
           onSelected: (i) {
             setState(() {
               _selectedIndex = i;
@@ -413,9 +414,9 @@ class _FoodListScreenState extends State<FoodListScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(children: [const Icon(Icons.restaurant_menu, size: 24), const Gap(8), const Text('Công thức nấu ăn').large().bold()]),
+              Row(children: [const Icon(Icons.restaurant_menu, size: 24), const Gap(8), const Text('Công thức nấu ăn').base().bold()]),
               const Gap(8),
-              const Text('Gợi ý những món ngon từ nguyên liệu có sẵn').muted(),
+              const Text('Gợi ý những món ngon từ nguyên liệu có sẵn').small.muted(),
             ],
           ),
         ),
