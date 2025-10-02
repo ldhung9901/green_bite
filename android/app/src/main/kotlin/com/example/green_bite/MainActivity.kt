@@ -1,4 +1,4 @@
-package com.example.green_bite
+package com.techpro.green_bite
 
 import io.flutter.embedding.android.FlutterActivity
 

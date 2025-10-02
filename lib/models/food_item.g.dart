@@ -17,61 +17,17 @@ const FoodItemSchema = CollectionSchema(
   name: r'FoodItem',
   id: 8311037358550475404,
   properties: {
-    r'createdAt': PropertySchema(
-      id: 0,
-      name: r'createdAt',
-      type: IsarType.dateTime,
-    ),
-    r'daysUntilExpiry': PropertySchema(
-      id: 1,
-      name: r'daysUntilExpiry',
-      type: IsarType.long,
-    ),
-    r'description': PropertySchema(
-      id: 2,
-      name: r'description',
-      type: IsarType.string,
-    ),
-    r'expiryDate': PropertySchema(
-      id: 3,
-      name: r'expiryDate',
-      type: IsarType.dateTime,
-    ),
-    r'expiryStatus': PropertySchema(
-      id: 4,
-      name: r'expiryStatus',
-      type: IsarType.string,
-    ),
-    r'imagePath': PropertySchema(
-      id: 5,
-      name: r'imagePath',
-      type: IsarType.string,
-    ),
-    r'isExpired': PropertySchema(
-      id: 6,
-      name: r'isExpired',
-      type: IsarType.bool,
-    ),
-    r'isExpiredOrExpiringSoon': PropertySchema(
-      id: 7,
-      name: r'isExpiredOrExpiringSoon',
-      type: IsarType.bool,
-    ),
-    r'isExpiringSoon': PropertySchema(
-      id: 8,
-      name: r'isExpiringSoon',
-      type: IsarType.bool,
-    ),
-    r'name': PropertySchema(
-      id: 9,
-      name: r'name',
-      type: IsarType.string,
-    ),
-    r'tags': PropertySchema(
-      id: 10,
-      name: r'tags',
-      type: IsarType.stringList,
-    )
+    r'createdAt': PropertySchema(id: 0, name: r'createdAt', type: IsarType.dateTime),
+    r'daysUntilExpiry': PropertySchema(id: 1, name: r'daysUntilExpiry', type: IsarType.long),
+    r'description': PropertySchema(id: 2, name: r'description', type: IsarType.string),
+    r'expiryDate': PropertySchema(id: 3, name: r'expiryDate', type: IsarType.dateTime),
+    r'expiryStatus': PropertySchema(id: 4, name: r'expiryStatus', type: IsarType.string),
+    r'imagePath': PropertySchema(id: 5, name: r'imagePath', type: IsarType.string),
+    r'isExpired': PropertySchema(id: 6, name: r'isExpired', type: IsarType.bool),
+    r'isExpiredOrExpiringSoon': PropertySchema(id: 7, name: r'isExpiredOrExpiringSoon', type: IsarType.bool),
+    r'isExpiringSoon': PropertySchema(id: 8, name: r'isExpiringSoon', type: IsarType.bool),
+    r'name': PropertySchema(id: 9, name: r'name', type: IsarType.string),
+    r'tags': PropertySchema(id: 10, name: r'tags', type: IsarType.stringList),
   },
   estimateSize: _foodItemEstimateSize,
   serialize: _foodItemSerialize,
@@ -84,40 +40,22 @@ const FoodItemSchema = CollectionSchema(
       name: r'name',
       unique: false,
       replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'name',
-          type: IndexType.hash,
-          caseSensitive: true,
-        )
-      ],
+      properties: [IndexPropertySchema(name: r'name', type: IndexType.hash, caseSensitive: true)],
     ),
     r'expiryDate': IndexSchema(
       id: -1636839555668080254,
       name: r'expiryDate',
       unique: false,
       replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'expiryDate',
-          type: IndexType.value,
-          caseSensitive: false,
-        )
-      ],
+      properties: [IndexPropertySchema(name: r'expiryDate', type: IndexType.value, caseSensitive: false)],
     ),
     r'createdAt': IndexSchema(
       id: -3433535483987302584,
       name: r'createdAt',
       unique: false,
       replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'createdAt',
-          type: IndexType.value,
-          caseSensitive: false,
-        )
-      ],
-    )
+      properties: [IndexPropertySchema(name: r'createdAt', type: IndexType.value, caseSensitive: false)],
+    ),
   },
   links: {},
   embeddedSchemas: {},
@@ -127,11 +65,7 @@ const FoodItemSchema = CollectionSchema(
   version: '3.1.0+1',
 );
 
-int _foodItemEstimateSize(
-  FoodItem object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
+int _foodItemEstimateSize(FoodItem object, List<int> offsets, Map<Type, List<int>> allOffsets) {
   var bytesCount = offsets.last;
   {
     final value = object.description;
@@ -157,12 +91,7 @@ int _foodItemEstimateSize(
   return bytesCount;
 }
 
-void _foodItemSerialize(
-  FoodItem object,
-  IsarWriter writer,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
+void _foodItemSerialize(FoodItem object, IsarWriter writer, List<int> offsets, Map<Type, List<int>> allOffsets) {
   writer.writeDateTime(offsets[0], object.createdAt);
   writer.writeLong(offsets[1], object.daysUntilExpiry);
   writer.writeString(offsets[2], object.description);
@@ -176,12 +105,7 @@ void _foodItemSerialize(
   writer.writeStringList(offsets[10], object.tags);
 }
 
-FoodItem _foodItemDeserialize(
-  Id id,
-  IsarReader reader,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
+FoodItem _foodItemDeserialize(Id id, IsarReader reader, List<int> offsets, Map<Type, List<int>> allOffsets) {
   final object = FoodItem();
   object.createdAt = reader.readDateTime(offsets[0]);
   object.description = reader.readStringOrNull(offsets[2]);
@@ -193,12 +117,7 @@ FoodItem _foodItemDeserialize(
   return object;
 }
 
-P _foodItemDeserializeProp<P>(
-  IsarReader reader,
-  int propertyId,
-  int offset,
-  Map<Type, List<int>> allOffsets,
-) {
+P _foodItemDeserializeProp<P>(IsarReader reader, int propertyId, int offset, Map<Type, List<int>> allOffsets) {
   switch (propertyId) {
     case 0:
       return (reader.readDateTime(offset)) as P;
@@ -248,17 +167,13 @@ extension FoodItemQueryWhereSort on QueryBuilder<FoodItem, FoodItem, QWhere> {
 
   QueryBuilder<FoodItem, FoodItem, QAfterWhere> anyExpiryDate() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'expiryDate'),
-      );
+      return query.addWhereClause(const IndexWhereClause.any(indexName: r'expiryDate'));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterWhere> anyCreatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'createdAt'),
-      );
+      return query.addWhereClause(const IndexWhereClause.any(indexName: r'createdAt'));
     });
   }
 }
@@ -266,1322 +181,602 @@ extension FoodItemQueryWhereSort on QueryBuilder<FoodItem, FoodItem, QWhere> {
 extension FoodItemQueryWhere on QueryBuilder<FoodItem, FoodItem, QWhereClause> {
   QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: id,
-        upper: id,
-      ));
+      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            )
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            );
+        return query.addWhereClause(IdWhereClause.lessThan(upper: id, includeUpper: false)).addWhereClause(IdWhereClause.greaterThan(lower: id, includeLower: false));
       } else {
-        return query
-            .addWhereClause(
-              IdWhereClause.greaterThan(lower: id, includeLower: false),
-            )
-            .addWhereClause(
-              IdWhereClause.lessThan(upper: id, includeUpper: false),
-            );
+        return query.addWhereClause(IdWhereClause.greaterThan(lower: id, includeLower: false)).addWhereClause(IdWhereClause.lessThan(upper: id, includeUpper: false));
       }
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idGreaterThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.greaterThan(lower: id, includeLower: include),
-      );
+      return query.addWhereClause(IdWhereClause.greaterThan(lower: id, includeLower: include));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idLessThan(Id id,
-      {bool include = false}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.lessThan(upper: id, includeUpper: include),
-      );
+      return query.addWhereClause(IdWhereClause.lessThan(upper: id, includeUpper: include));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idBetween(
-    Id lowerId,
-    Id upperId, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> idBetween(Id lowerId, Id upperId, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(
-        lower: lowerId,
-        includeLower: includeLower,
-        upper: upperId,
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(IdWhereClause.between(lower: lowerId, includeLower: includeLower, upper: upperId, includeUpper: includeUpper));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> nameEqualTo(String name) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'name',
-        value: [name],
-      ));
+      return query.addWhereClause(IndexWhereClause.equalTo(indexName: r'name', value: [name]));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> nameNotEqualTo(
-      String name) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> nameNotEqualTo(String name) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ));
+        return query.addWhereClause(IndexWhereClause.between(indexName: r'name', lower: [], upper: [name], includeUpper: false)).addWhereClause(IndexWhereClause.between(indexName: r'name', lower: [name], includeLower: false, upper: []));
       } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [name],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'name',
-              lower: [],
-              upper: [name],
-              includeUpper: false,
-            ));
+        return query.addWhereClause(IndexWhereClause.between(indexName: r'name', lower: [name], includeLower: false, upper: [])).addWhereClause(IndexWhereClause.between(indexName: r'name', lower: [], upper: [name], includeUpper: false));
       }
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateEqualTo(
-      DateTime expiryDate) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateEqualTo(DateTime expiryDate) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'expiryDate',
-        value: [expiryDate],
-      ));
+      return query.addWhereClause(IndexWhereClause.equalTo(indexName: r'expiryDate', value: [expiryDate]));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateNotEqualTo(
-      DateTime expiryDate) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateNotEqualTo(DateTime expiryDate) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'expiryDate',
-              lower: [],
-              upper: [expiryDate],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'expiryDate',
-              lower: [expiryDate],
-              includeLower: false,
-              upper: [],
-            ));
+        return query.addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [], upper: [expiryDate], includeUpper: false)).addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [expiryDate], includeLower: false, upper: []));
       } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'expiryDate',
-              lower: [expiryDate],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'expiryDate',
-              lower: [],
-              upper: [expiryDate],
-              includeUpper: false,
-            ));
+        return query.addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [expiryDate], includeLower: false, upper: [])).addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [], upper: [expiryDate], includeUpper: false));
       }
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateGreaterThan(
-    DateTime expiryDate, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateGreaterThan(DateTime expiryDate, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'expiryDate',
-        lower: [expiryDate],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [expiryDate], includeLower: include, upper: []));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateLessThan(
-    DateTime expiryDate, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateLessThan(DateTime expiryDate, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'expiryDate',
-        lower: [],
-        upper: [expiryDate],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [], upper: [expiryDate], includeUpper: include));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateBetween(
-    DateTime lowerExpiryDate,
-    DateTime upperExpiryDate, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> expiryDateBetween(DateTime lowerExpiryDate, DateTime upperExpiryDate, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'expiryDate',
-        lower: [lowerExpiryDate],
-        includeLower: includeLower,
-        upper: [upperExpiryDate],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(IndexWhereClause.between(indexName: r'expiryDate', lower: [lowerExpiryDate], includeLower: includeLower, upper: [upperExpiryDate], includeUpper: includeUpper));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtEqualTo(
-      DateTime createdAt) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.equalTo(
-        indexName: r'createdAt',
-        value: [createdAt],
-      ));
+      return query.addWhereClause(IndexWhereClause.equalTo(indexName: r'createdAt', value: [createdAt]));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtNotEqualTo(
-      DateTime createdAt) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtNotEqualTo(DateTime createdAt) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [],
-              upper: [createdAt],
-              includeUpper: false,
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [createdAt],
-              includeLower: false,
-              upper: [],
-            ));
+        return query.addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [], upper: [createdAt], includeUpper: false)).addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [createdAt], includeLower: false, upper: []));
       } else {
-        return query
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [createdAt],
-              includeLower: false,
-              upper: [],
-            ))
-            .addWhereClause(IndexWhereClause.between(
-              indexName: r'createdAt',
-              lower: [],
-              upper: [createdAt],
-              includeUpper: false,
-            ));
+        return query.addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [createdAt], includeLower: false, upper: [])).addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [], upper: [createdAt], includeUpper: false));
       }
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtGreaterThan(
-    DateTime createdAt, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtGreaterThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [createdAt],
-        includeLower: include,
-        upper: [],
-      ));
+      return query.addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [createdAt], includeLower: include, upper: []));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtLessThan(
-    DateTime createdAt, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtLessThan(DateTime createdAt, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [],
-        upper: [createdAt],
-        includeUpper: include,
-      ));
+      return query.addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [], upper: [createdAt], includeUpper: include));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtBetween(
-    DateTime lowerCreatedAt,
-    DateTime upperCreatedAt, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterWhereClause> createdAtBetween(DateTime lowerCreatedAt, DateTime upperCreatedAt, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IndexWhereClause.between(
-        indexName: r'createdAt',
-        lower: [lowerCreatedAt],
-        includeLower: includeLower,
-        upper: [upperCreatedAt],
-        includeUpper: includeUpper,
-      ));
+      return query.addWhereClause(IndexWhereClause.between(indexName: r'createdAt', lower: [lowerCreatedAt], includeLower: includeLower, upper: [upperCreatedAt], includeUpper: includeUpper));
     });
   }
 }
 
-extension FoodItemQueryFilter
-    on QueryBuilder<FoodItem, FoodItem, QFilterCondition> {
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtEqualTo(
-      DateTime value) {
+extension FoodItemQueryFilter on QueryBuilder<FoodItem, FoodItem, QFilterCondition> {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'createdAt',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'createdAt', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'createdAt',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'createdAt', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'createdAt',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'createdAt', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtBetween(
-    DateTime lower,
-    DateTime upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> createdAtBetween(DateTime lower, DateTime upper, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'createdAt',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'createdAt', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      daysUntilExpiryEqualTo(int value) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> daysUntilExpiryEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'daysUntilExpiry',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'daysUntilExpiry', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      daysUntilExpiryGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> daysUntilExpiryGreaterThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'daysUntilExpiry',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'daysUntilExpiry', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      daysUntilExpiryLessThan(
-    int value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> daysUntilExpiryLessThan(int value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'daysUntilExpiry',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'daysUntilExpiry', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      daysUntilExpiryBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> daysUntilExpiryBetween(int lower, int upper, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'daysUntilExpiry',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'daysUntilExpiry', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'description',
-      ));
+      return query.addFilterCondition(const FilterCondition.isNull(property: r'description'));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      descriptionIsNotNull() {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'description',
-      ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(property: r'description'));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'description', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      descriptionGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionGreaterThan(String? value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'description', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionLessThan(String? value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'description', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionBetween(String? lower, String? upper, {bool includeLower = true, bool includeUpper = true, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'description',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'description', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.startsWith(property: r'description', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.endsWith(property: r'description', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'description',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.contains(property: r'description', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'description',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.matches(property: r'description', wildcard: pattern, caseSensitive: caseSensitive));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'description',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'description', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      descriptionIsNotEmpty() {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> descriptionIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'description',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(property: r'description', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateEqualTo(
-      DateTime value) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateEqualTo(DateTime value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'expiryDate',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'expiryDate', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateGreaterThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateGreaterThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'expiryDate',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'expiryDate', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateLessThan(
-    DateTime value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateLessThan(DateTime value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'expiryDate',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'expiryDate', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateBetween(
-    DateTime lower,
-    DateTime upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryDateBetween(DateTime lower, DateTime upper, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'expiryDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'expiryDate', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'expiryStatus',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'expiryStatus', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      expiryStatusGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusGreaterThan(String value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'expiryStatus',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'expiryStatus', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusLessThan(String value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'expiryStatus',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'expiryStatus', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusBetween(String lower, String upper, {bool includeLower = true, bool includeUpper = true, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'expiryStatus',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'expiryStatus', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      expiryStatusStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'expiryStatus',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.startsWith(property: r'expiryStatus', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'expiryStatus',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.endsWith(property: r'expiryStatus', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'expiryStatus',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.contains(property: r'expiryStatus', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'expiryStatus',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.matches(property: r'expiryStatus', wildcard: pattern, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      expiryStatusIsEmpty() {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'expiryStatus',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'expiryStatus', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      expiryStatusIsNotEmpty() {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> expiryStatusIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'expiryStatus',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(property: r'expiryStatus', value: ''));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'id', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idGreaterThan(
-    Id value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idGreaterThan(Id value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'id', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idLessThan(
-    Id value, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idLessThan(Id value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'id', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idBetween(
-    Id lower,
-    Id upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> idBetween(Id lower, Id upper, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'id', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'imagePath',
-      ));
+      return query.addFilterCondition(const FilterCondition.isNull(property: r'imagePath'));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'imagePath',
-      ));
+      return query.addFilterCondition(const FilterCondition.isNotNull(property: r'imagePath'));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'imagePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'imagePath', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathGreaterThan(String? value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'imagePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'imagePath', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathLessThan(String? value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'imagePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'imagePath', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathBetween(String? lower, String? upper, {bool includeLower = true, bool includeUpper = true, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'imagePath',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'imagePath', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'imagePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.startsWith(property: r'imagePath', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'imagePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.endsWith(property: r'imagePath', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'imagePath',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.contains(property: r'imagePath', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'imagePath',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.matches(property: r'imagePath', wildcard: pattern, caseSensitive: caseSensitive));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'imagePath',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'imagePath', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      imagePathIsNotEmpty() {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> imagePathIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'imagePath',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(property: r'imagePath', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> isExpiredEqualTo(
-      bool value) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> isExpiredEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isExpired',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'isExpired', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      isExpiredOrExpiringSoonEqualTo(bool value) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> isExpiredOrExpiringSoonEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isExpiredOrExpiringSoon',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'isExpiredOrExpiringSoon', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> isExpiringSoonEqualTo(
-      bool value) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> isExpiringSoonEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isExpiringSoon',
-        value: value,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'isExpiringSoon', value: value));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'name', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameGreaterThan(String value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'name', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameLessThan(String value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'name', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameBetween(String lower, String upper, {bool includeLower = true, bool includeUpper = true, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'name',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'name', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.startsWith(property: r'name', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.endsWith(property: r'name', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'name',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.contains(property: r'name', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'name',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.matches(property: r'name', wildcard: pattern, caseSensitive: caseSensitive));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'name',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'name', value: ''));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'name',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(property: r'name', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementEqualTo(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'tags', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      tagsElementGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementGreaterThan(String value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(include: include, property: r'tags', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementLessThan(String value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.lessThan(include: include, property: r'tags', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementBetween(String lower, String upper, {bool includeLower = true, bool includeUpper = true, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'tags',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.between(property: r'tags', lower: lower, includeLower: includeLower, upper: upper, includeUpper: includeUpper, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.startsWith(property: r'tags', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.endsWith(property: r'tags', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementContains(
-      String value,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'tags',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.contains(property: r'tags', value: value, caseSensitive: caseSensitive));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'tags',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(FilterCondition.matches(property: r'tags', wildcard: pattern, caseSensitive: caseSensitive));
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'tags',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.equalTo(property: r'tags', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition>
-      tagsElementIsNotEmpty() {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'tags',
-        value: '',
-      ));
+      return query.addFilterCondition(FilterCondition.greaterThan(property: r'tags', value: ''));
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthEqualTo(
-      int length) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        length,
-        true,
-        length,
-        true,
-      );
+      return query.listLength(r'tags', length, true, length, true);
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        0,
-        true,
-        0,
-        true,
-      );
+      return query.listLength(r'tags', 0, true, 0, true);
     });
   }
 
   QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        0,
-        false,
-        999999,
-        true,
-      );
+      return query.listLength(r'tags', 0, false, 999999, true);
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthLessThan(int length, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        0,
-        true,
-        length,
-        include,
-      );
+      return query.listLength(r'tags', 0, true, length, include);
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthGreaterThan(int length, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        length,
-        include,
-        999999,
-        true,
-      );
+      return query.listLength(r'tags', length, include, 999999, true);
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
+  QueryBuilder<FoodItem, FoodItem, QAfterFilterCondition> tagsLengthBetween(int lower, int upper, {bool includeLower = true, bool includeUpper = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'tags',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
+      return query.listLength(r'tags', lower, includeLower, upper, includeUpper);
     });
   }
 }
 
-extension FoodItemQueryObject
-    on QueryBuilder<FoodItem, FoodItem, QFilterCondition> {}
+extension FoodItemQueryObject on QueryBuilder<FoodItem, FoodItem, QFilterCondition> {}
 
-extension FoodItemQueryLinks
-    on QueryBuilder<FoodItem, FoodItem, QFilterCondition> {}
+extension FoodItemQueryLinks on QueryBuilder<FoodItem, FoodItem, QFilterCondition> {}
 
 extension FoodItemQuerySortBy on QueryBuilder<FoodItem, FoodItem, QSortBy> {
   QueryBuilder<FoodItem, FoodItem, QAfterSortBy> sortByCreatedAt() {
@@ -1668,15 +863,13 @@ extension FoodItemQuerySortBy on QueryBuilder<FoodItem, FoodItem, QSortBy> {
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterSortBy>
-      sortByIsExpiredOrExpiringSoon() {
+  QueryBuilder<FoodItem, FoodItem, QAfterSortBy> sortByIsExpiredOrExpiringSoon() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isExpiredOrExpiringSoon', Sort.asc);
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterSortBy>
-      sortByIsExpiredOrExpiringSoonDesc() {
+  QueryBuilder<FoodItem, FoodItem, QAfterSortBy> sortByIsExpiredOrExpiringSoonDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isExpiredOrExpiringSoon', Sort.desc);
     });
@@ -1707,8 +900,7 @@ extension FoodItemQuerySortBy on QueryBuilder<FoodItem, FoodItem, QSortBy> {
   }
 }
 
-extension FoodItemQuerySortThenBy
-    on QueryBuilder<FoodItem, FoodItem, QSortThenBy> {
+extension FoodItemQuerySortThenBy on QueryBuilder<FoodItem, FoodItem, QSortThenBy> {
   QueryBuilder<FoodItem, FoodItem, QAfterSortBy> thenByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'createdAt', Sort.asc);
@@ -1805,15 +997,13 @@ extension FoodItemQuerySortThenBy
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterSortBy>
-      thenByIsExpiredOrExpiringSoon() {
+  QueryBuilder<FoodItem, FoodItem, QAfterSortBy> thenByIsExpiredOrExpiringSoon() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isExpiredOrExpiringSoon', Sort.asc);
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QAfterSortBy>
-      thenByIsExpiredOrExpiringSoonDesc() {
+  QueryBuilder<FoodItem, FoodItem, QAfterSortBy> thenByIsExpiredOrExpiringSoonDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isExpiredOrExpiringSoon', Sort.desc);
     });
@@ -1844,8 +1034,7 @@ extension FoodItemQuerySortThenBy
   }
 }
 
-extension FoodItemQueryWhereDistinct
-    on QueryBuilder<FoodItem, FoodItem, QDistinct> {
+extension FoodItemQueryWhereDistinct on QueryBuilder<FoodItem, FoodItem, QDistinct> {
   QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByCreatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'createdAt');
@@ -1858,8 +1047,7 @@ extension FoodItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByDescription(
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByDescription({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'description', caseSensitive: caseSensitive);
     });
@@ -1871,15 +1059,13 @@ extension FoodItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByExpiryStatus(
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByExpiryStatus({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'expiryStatus', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByImagePath(
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByImagePath({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'imagePath', caseSensitive: caseSensitive);
     });
@@ -1891,8 +1077,7 @@ extension FoodItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QDistinct>
-      distinctByIsExpiredOrExpiringSoon() {
+  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByIsExpiredOrExpiringSoon() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isExpiredOrExpiringSoon');
     });
@@ -1904,8 +1089,7 @@ extension FoodItemQueryWhereDistinct
     });
   }
 
-  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByName(
-      {bool caseSensitive = true}) {
+  QueryBuilder<FoodItem, FoodItem, QDistinct> distinctByName({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
     });
@@ -1918,8 +1102,7 @@ extension FoodItemQueryWhereDistinct
   }
 }
 
-extension FoodItemQueryProperty
-    on QueryBuilder<FoodItem, FoodItem, QQueryProperty> {
+extension FoodItemQueryProperty on QueryBuilder<FoodItem, FoodItem, QQueryProperty> {
   QueryBuilder<FoodItem, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
@@ -1968,8 +1151,7 @@ extension FoodItemQueryProperty
     });
   }
 
-  QueryBuilder<FoodItem, bool, QQueryOperations>
-      isExpiredOrExpiringSoonProperty() {
+  QueryBuilder<FoodItem, bool, QQueryOperations> isExpiredOrExpiringSoonProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isExpiredOrExpiringSoon');
     });

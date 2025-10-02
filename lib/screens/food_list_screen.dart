@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'package:flutter/services.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'add_edit_food_screen.dart';
+import 'tag_management_screen.dart';
 import '../models/food_item.dart';
 import '../services/database_service.dart';
 
@@ -91,7 +93,12 @@ class _FoodListScreenState extends State<FoodListScreen> {
   }
 
   NavigationItem _buildNavItem(String label, IconData icon) {
-    return NavigationItem(label: Text(label), child: Icon(icon));
+    return NavigationItem(
+      style: const ButtonStyle.muted(density: ButtonDensity.icon),
+      selectedStyle: const ButtonStyle.fixed(density: ButtonDensity.icon),
+      label: Text(label),
+      child: Icon(icon),
+    );
   }
 
   @override
@@ -102,7 +109,19 @@ class _FoodListScreenState extends State<FoodListScreen> {
           title: const Text('GreenBite'),
           subtitle: const Text('Quản lý thực phẩm'),
           trailing: [
-            GhostButton(
+            OutlineButton(
+              density: ButtonDensity.icon,
+              onPressed: () async {
+                final result = await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => const TagManagementScreen()));
+                if (result == true) {
+                  _loadFoodItems();
+                }
+              },
+              child: const Icon(Icons.label, color: Colors.red),
+            ),
+            const Gap(8),
+
+            OutlineButton(
               density: ButtonDensity.icon,
               onPressed: () async {
                 final result = await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => const AddEditFoodScreen()));
@@ -119,6 +138,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
       footers: [
         const Divider(),
         NavigationBar(
+          labelType: NavigationLabelType.all,
           onSelected: (i) {
             setState(() {
               _selectedIndex = i;
@@ -146,6 +166,8 @@ class _FoodListScreenState extends State<FoodListScreen> {
             children: [
               // Search Field
               TextField(
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => FocusScope.of(context).unfocus(),
                 placeholder: const Text('Tìm kiếm thực phẩm...'),
                 leading: const Icon(Icons.search),
                 onChanged: (value) {
@@ -187,16 +209,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
         Expanded(
           child: _filteredItems.isEmpty
               ? const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.restaurant, size: 64),
-                      Gap(16),
-                      const Text('Chưa có thực phẩm nào', style: TextStyle(fontSize: 18)),
-                      Gap(8),
-                      Text('Thêm thực phẩm đầu tiên của bạn!'),
-                    ],
-                  ),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [Icon(Icons.restaurant, size: 64), Gap(16), const Text('Chưa có thực phẩm nào'), Gap(8), Text('Thêm thực phẩm đầu tiên của bạn!')]),
                 )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -218,7 +231,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                             children: [
                               // Header with Image, Title, and Action Button
                               Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(5.0),
                                 child: Row(
                                   children: [
                                     // Larger Image with Status Border
@@ -228,7 +241,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                       decoration: BoxDecoration(
                                         color: Colors.black.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: _getStatusColor(item).withValues(alpha: 0.3), width: 2),
+                                        border: Border.all(color: Colors.black.withValues(alpha: 0.1), width: 2),
                                       ),
                                       child: item.imagePath != null
                                           ? ClipRRect(
@@ -285,6 +298,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                       onPressed: () {
                                         showDropdown(
                                           modal: false,
+                                          anchorAlignment: Alignment.topRight,
                                           context: context,
                                           builder: (context) {
                                             return DropdownMenu(
@@ -352,7 +366,6 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                    
                                       const Gap(6),
                                       Wrap(
                                         spacing: 6,
@@ -367,7 +380,6 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                     ],
                                   ),
                                 ),
-                                const Gap(16),
                               ] else ...[
                                 const Gap(16),
                               ],

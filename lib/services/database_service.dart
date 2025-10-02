@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/food_item.dart';
+import '../models/tag.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -18,10 +19,7 @@ class DatabaseService {
 
   Future<Isar> _initDB() async {
     final dir = await getApplicationDocumentsDirectory();
-    return await Isar.open(
-      [FoodItemSchema],
-      directory: dir.path,
-    );
+    return await Isar.open([FoodItemSchema, TagSchema], directory: dir.path);
   }
 
   // CRUD Operations
@@ -44,37 +42,25 @@ class DatabaseService {
 
   Future<List<FoodItem>> searchFoodItems(String query) async {
     final isar = await database;
-    return await isar.foodItems
-        .filter()
-        .nameContains(query, caseSensitive: false)
-        .findAll();
+    return await isar.foodItems.filter().nameContains(query, caseSensitive: false).findAll();
   }
 
   Future<List<FoodItem>> getFoodItemsByTag(String tag) async {
     final isar = await database;
-    return await isar.foodItems
-        .filter()
-        .tagsElementContains(tag)
-        .findAll();
+    return await isar.foodItems.filter().tagsElementContains(tag).findAll();
   }
 
   Future<List<FoodItem>> getExpiredFoodItems() async {
     final isar = await database;
     final now = DateTime.now();
-    return await isar.foodItems
-        .filter()
-        .expiryDateLessThan(now)
-        .findAll();
+    return await isar.foodItems.filter().expiryDateLessThan(now).findAll();
   }
 
   Future<List<FoodItem>> getExpiringSoonFoodItems({int days = 3}) async {
     final isar = await database;
     final now = DateTime.now();
     final futureDate = now.add(Duration(days: days));
-    return await isar.foodItems
-        .filter()
-        .expiryDateBetween(now, futureDate)
-        .findAll();
+    return await isar.foodItems.filter().expiryDateBetween(now, futureDate).findAll();
   }
 
   Future<void> updateFoodItem(FoodItem foodItem) async {
@@ -100,11 +86,11 @@ class DatabaseService {
   Future<Map<String, int>> getStatistics() async {
     final isar = await database;
     final all = await isar.foodItems.where().findAll();
-    
+
     int expired = 0;
     int expiringSoon = 0;
     int fresh = 0;
-    
+
     for (var item in all) {
       if (item.isExpired) {
         expired++;
@@ -114,26 +100,79 @@ class DatabaseService {
         fresh++;
       }
     }
-    
-    return {
-      'total': all.length,
-      'expired': expired,
-      'expiringSoon': expiringSoon,
-      'fresh': fresh,
-    };
+
+    return {'total': all.length, 'expired': expired, 'expiringSoon': expiringSoon, 'fresh': fresh};
   }
 
-  // Get unique tags
-  Future<List<String>> getAllTags() async {
+  // Get unique tags from food items (for backward compatibility)
+  Future<List<String>> getAllTagsFromFoodItems() async {
     final isar = await database;
     final items = await isar.foodItems.where().findAll();
     final Set<String> allTags = {};
-    
+
     for (var item in items) {
       allTags.addAll(item.tags);
     }
-    
+
     return allTags.toList()..sort();
+  }
+
+  // Tag CRUD Operations
+  Future<void> insertTag(Tag tag) async {
+    final isar = await database;
+    await isar.writeTxn(() async {
+      await isar.tags.put(tag);
+    });
+  }
+
+  Future<List<Tag>> getAllTags() async {
+    final isar = await database;
+    return await isar.tags.where().sortByName().findAll();
+  }
+
+  Future<Tag?> getTagById(int id) async {
+    final isar = await database;
+    return await isar.tags.get(id);
+  }
+
+  Future<Tag?> getTagByName(String name) async {
+    final isar = await database;
+    return await isar.tags.filter().nameEqualTo(name).findFirst();
+  }
+
+  Future<void> updateTag(Tag tag) async {
+    final isar = await database;
+    await isar.writeTxn(() async {
+      tag.updatedAt = DateTime.now();
+      await isar.tags.put(tag);
+    });
+  }
+
+  Future<void> deleteTag(int id) async {
+    final isar = await database;
+    await isar.writeTxn(() async {
+      await isar.tags.delete(id);
+    });
+  }
+
+  Future<List<Tag>> searchTags(String query) async {
+    final isar = await database;
+    return await isar.tags.filter().nameContains(query, caseSensitive: false).findAll();
+  }
+
+  // Initialize default tags if none exist
+  Future<void> initializeDefaultTags() async {
+    final existingTags = await getAllTags();
+    if (existingTags.isEmpty) {
+      final defaultTags = ['Rau', 'Thịt', 'Đồ uống', 'Trái cây', 'Bánh kẹo'];
+
+      for (String tagName in defaultTags) {
+        final tag = Tag()
+          ..name = tagName
+          ..createdAt = DateTime.now();
+        await insertTag(tag);
+      }
+    }
   }
 
   // Close database
