@@ -35,6 +35,49 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
   List<Tag> _availableTags = [];
   bool _tagsLoading = true;
   late final TextEditingController _descriptionController;
+  late final TextEditingController _nameController;
+  late final FocusNode _nameFocusNode;
+  bool _showSuggestions = false;
+  List<String> _currentSuggestions = [];
+
+  // Common Vietnamese food names for autocomplete
+  static const List<String> _commonVietnameseFoods = [
+    // Rau củ quả
+    'Cà chua', 'Dưa leo', 'Cà rốt', 'Khoai tây', 'Khoai lang', 'Su hào', 'Bắp cải',
+    'Rau muống', 'Rau cải', 'Rau xà lách', 'Rau thơm', 'Húng quế', 'Ngò rí', 'Hành lá',
+    'Tỏi', 'Hành tím', 'Gừng', 'Ớt', 'Chanh', 'Táo', 'Cam', 'Chuối', 'Xoài',
+    'Đu đủ', 'Dưa hấu', 'Dưa gang', 'Nho', 'Dứa', 'Bưởi', 'Quýt',
+
+    // Thịt, cá, hải sản
+    'Thịt heo', 'Thịt bò', 'Thịt gà', 'Thịt vịt', 'Cá thu', 'Cá chép', 'Cá lóc',
+    'Cá tra', 'Cá hồi', 'Tôm', 'Cua', 'Mực', 'Sò', 'Nghêu', 'Trứng gà', 'Trứng vịt',
+
+    // Thực phẩm chế biến
+    'Gạo tẻ', 'Gạo nếp', 'Bún', 'Miến', 'Phở', 'Bánh mì', 'Bánh bao', 'Nem',
+    'Chả cá', 'Giò lụa', 'Thịt nguội', 'Pate', 'Bơ', 'Phô mai', 'Sữa tươi',
+    'Sữa chua', 'Kem', 'Bánh quy', 'Kẹo', 'Chocolate',
+
+    // Gia vị và nguyên liệu nấu ăn
+    'Nước mắm', 'Tương ớt', 'Dầu ăn', 'Dấm', 'Đường', 'Muối', 'Tiêu', 'Ngũ vị hương',
+    'Bột ngọt', 'Bột mì', 'Bột năng', 'Nước dừa', 'Sả', 'Lá chanh', 'Me',
+
+    // Đồ uống
+    'Nước lọc', 'Nước ngọt', 'Bia', 'Rượu', 'Trà', 'Cà phê', 'Nước cam',
+    'Nước dừa tươi', 'Sinh tố', 'Sữa đậu nành',
+
+    // Đồ khô, hạt
+    'Đậu phộng', 'Hạt điều', 'Hạt óc chó', 'Nho khô', 'Mít sấy', 'Chuối sấy',
+    'Khô bò', 'Khô cá', 'Mắm tôm', 'Tôm khô', 'Nấm khô',
+  ];
+
+  List<String> _getFilteredSuggestions(String query) {
+    if (query.isEmpty) return [];
+
+    return _commonVietnameseFoods
+        .where((food) => food.toLowerCase().contains(query.toLowerCase()))
+        .take(8) // Limit to 8 suggestions
+        .toList();
+  }
 
   @override
   void initState() {
@@ -44,11 +87,31 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
       _isEditing = true;
       _loadExistingData();
     }
-    // Initialize controller after possible existing data is loaded
+    // Initialize controllers and focus nodes after possible existing data is loaded
+    _nameController = TextEditingController(text: _selectedName);
     _descriptionController = TextEditingController(text: _selectedDescription);
+    _nameFocusNode = FocusNode();
+
     // Keep the backing model in sync without calling setState each keystroke
+    _nameController.addListener(() {
+      _selectedName = _nameController.text;
+    });
     _descriptionController.addListener(() {
       _selectedDescription = _descriptionController.text;
+    });
+
+    // Hide suggestions when focus is lost (with delay to allow tap selection)
+    _nameFocusNode.addListener(() {
+      if (!_nameFocusNode.hasFocus) {
+        // Add a small delay to allow taps to register before hiding
+        Future.delayed(const Duration(milliseconds: 150), () {
+          if (mounted && !_nameFocusNode.hasFocus) {
+            setState(() {
+              _showSuggestions = false;
+            });
+          }
+        });
+      }
     });
   }
 
@@ -233,20 +296,66 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Name Field
+                        // Name Field with Custom Autocomplete
                         FormField(
                           key: _nameKey,
                           label: const Text('Tên thực phẩm *'),
-                          child: TextField(
-                            placeholder: const Text('Nhập tên thực phẩm...'),
-                            initialValue: _selectedName,
-                            textInputAction: TextInputAction.done,
-                            onSubmitted: (_) => FocusScope.of(context).unfocus(),
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedName = value;
-                              });
-                            },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextField(
+                                controller: _nameController,
+                                focusNode: _nameFocusNode,
+                                placeholder: const Text('Nhập tên thực phẩm...'),
+                                textInputAction: TextInputAction.done,
+                                onSubmitted: (_) => FocusScope.of(context).unfocus(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedName = value;
+                                    _currentSuggestions = _getFilteredSuggestions(value);
+                                    _showSuggestions = _currentSuggestions.isNotEmpty && value.isNotEmpty;
+                                  });
+                                },
+                              ),
+                              if (_showSuggestions) ...[
+                                const Gap(4),
+                                Card(
+                                  child: Container(
+                                    constraints: const BoxConstraints(maxHeight: 200),
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      padding: const EdgeInsets.all(4),
+                                      itemCount: _currentSuggestions.length,
+                                      itemBuilder: (context, index) {
+                                        final suggestion = _currentSuggestions[index];
+                                        return GhostButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _selectedName = suggestion;
+                                              _nameController.text = suggestion;
+                                              _showSuggestions = false;
+                                              _currentSuggestions.clear();
+                                            });
+                                            FocusScope.of(context).unfocus();
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(suggestion, style: const TextStyle(fontSize: 14), textAlign: TextAlign.left),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
                         const Gap(16),
@@ -440,6 +549,8 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _nameFocusNode.dispose();
     _descriptionController.dispose();
     super.dispose();
   }

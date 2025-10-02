@@ -52,7 +52,6 @@ dependencies:
   # Notifications
   flutter_local_notifications: ^17.0.0
   flutter_launcher_icons: ^0.14.4
-  flutter_tesseract_ocr: ^0.4.30
   google_fonts: ^6.2.1
   device_info_plus: ^11.5.0
 

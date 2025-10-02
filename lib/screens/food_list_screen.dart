@@ -237,20 +237,19 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                   children: [
                                     // Larger Image with Status Border
                                     Container(
-                                      width: 80,
-                                      height: 80,
+                                      width: 60,
+                                      height: 60,
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withValues(alpha: 0.1),
                                         borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(color: Colors.black.withValues(alpha: 0.1), width: 2),
+                                        border: Border.all(color: Colors.black.withValues(alpha: 0.1), width: 0.5),
                                       ),
                                       child: item.imagePath != null
                                           ? ClipRRect(
                                               borderRadius: BorderRadius.circular(10),
                                               child: Image.file(
                                                 File(item.imagePath!),
-                                                width: 80,
-                                                height: 80,
+                                                width: 60,
+                                                height: 60,
                                                 fit: BoxFit.cover,
                                                 errorBuilder: (context, error, stackTrace) {
                                                   return Icon(Icons.restaurant, size: 32, color: _getStatusColor(item));
@@ -266,7 +265,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(item.name).large().bold(),
+                                          Text(item.name).base().bold(),
                                           const Gap(6),
                                           // Status Badge
                                           Container(
@@ -464,13 +463,13 @@ class _FoodListScreenState extends State<FoodListScreen> {
                       children: [
                         // Recipe header with image placeholder
                         Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(3.0),
                           child: Row(
                             children: [
                               // Recipe image placeholder
                               Container(
-                                width: 80,
-                                height: 80,
+                                width: 60,
+                                height: 60,
                                 decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
                                 child: const Icon(Icons.restaurant_menu, size: 32, color: Colors.orange),
                               ),
@@ -511,7 +510,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                             ],
                           ),
                         ),
-
+                        const Gap(16),
                         // Tags
                         if (recipe.tags.isNotEmpty) ...[
                           Padding(
