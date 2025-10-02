@@ -2,8 +2,6 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_tesseract_ocr/flutter_tesseract_ocr.dart';
-import 'package:intl/intl.dart';
 import '../models/food_item.dart';
 import '../models/tag.dart';
 import '../services/database_service.dart';
@@ -29,9 +27,10 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
   String _selectedDescription = '';
   DateTime _expiryDate = DateTime.now().add(const Duration(days: 7));
   List<String> _tags = [];
+  int _quantity = 1;
+  String _selectedUnit = 'cái';
   bool _isEditing = false;
   bool _isLoading = false;
-  bool _isOcrProcessing = false;
 
   List<Tag> _availableTags = [];
   bool _tagsLoading = true;
@@ -81,6 +80,8 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
     _imagePath = item.imagePath;
     _expiryDate = item.expiryDate;
     _tags = List.from(item.tags);
+    _quantity = item.quantity;
+    _selectedUnit = item.unit;
   }
 
   Future<void> _pickImage(ImageSource source) async {
@@ -107,77 +108,9 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
         setState(() {
           _imagePath = image.path;
         });
-        // Automatically OCR the newly selected image
-        await _performOcrOnPath(image.path);
       }
     } catch (e) {
       print('Lỗi khi chọn ảnh: $e');
-    }
-  }
-
-  Future<void> _pickImageAndOcr() async {
-    // Request camera permission first (with dialog to guide to Settings on iOS)
-    final hasPermission = await PermissionService.requestCameraPermissionWithDialog(context);
-    if (!hasPermission) {
-      // Show a message or handle denial
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('Permission Required'),
-          content: const Text('Camera permission is required to scan food labels.'),
-          actions: [Button(style: ButtonStyle.primary(), onPressed: () => Navigator.of(context).pop(), child: const Text('OK'))],
-        ),
-      );
-      return;
-    }
-
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? image = await picker.pickImage(source: ImageSource.camera, maxWidth: 1600, maxHeight: 1600, imageQuality: 85);
-      if (image == null) return;
-      setState(() {
-        _imagePath = image.path;
-      });
-      await _performOcrOnPath(image.path);
-    } catch (e) {
-      print('Lỗi khi chụp ảnh để OCR: $e');
-    }
-  }
-
-  Future<void> _performOcrOnPath(String path) async {
-    if (path.isEmpty) return;
-    setState(() {
-      _isOcrProcessing = true;
-    });
-    try {
-      final text = await FlutterTesseractOcr.extractText(
-        path,
-        language: 'eng+vie', // Requires tessdata for languages, fallback handled below
-      );
-      String processed = text.trim();
-      if (processed.isEmpty) {
-        // Fallback attempt with English only
-        try {
-          final fallback = await FlutterTesseractOcr.extractText(path, language: 'eng');
-          processed = fallback.trim();
-        } catch (_) {}
-      }
-      if (!mounted) return;
-      setState(() {
-        if (_selectedDescription.isEmpty) {
-          _selectedDescription = processed;
-        } else if (processed.isNotEmpty && !_selectedDescription.contains(processed)) {
-          _selectedDescription = (_selectedDescription + '\n' + processed).trim();
-        }
-      });
-    } catch (e) {
-      print('OCR error: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isOcrProcessing = false;
-        });
-      }
     }
   }
 
@@ -207,6 +140,8 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
         ..imagePath = _imagePath
         ..expiryDate = _expiryDate
         ..tags = _tags
+        ..quantity = _quantity
+        ..unit = _selectedUnit
         ..createdAt = _isEditing ? widget.foodItem!.createdAt : DateTime.now();
 
       if (_isEditing) {
@@ -319,25 +254,63 @@ class _AddEditFoodScreenState extends State<AddEditFoodScreen> {
                         // Description Field
                         FormField(
                           key: _descriptionKey,
-                          label: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Mô tả'),
-                              GhostButton(
-                                density: ButtonDensity.compact,
-                                onPressed: (_isLoading || _isOcrProcessing) ? null : _pickImageAndOcr,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (_isOcrProcessing) const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2)) else const Icon(Icons.camera_alt, size: 16),
-                                    const Gap(4),
-                                    Text(_isOcrProcessing ? 'OCR...' : 'OCR'),
-                                  ],
+                          label: const Text('Mô tả'),
+                          child: TextArea(placeholder: const Text('Mô tả thực phẩm (tùy chọn)...'), controller: _descriptionController, expandableHeight: true, initialHeight: 180),
+                        ),
+                        const Gap(16),
+
+                        // Quantity and Unit Fields
+                        const Text('Số lượng & Đơn vị'),
+                        const Gap(8),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 100,
+                              child: TextField(
+                                initialValue: _quantity.toString(),
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                                onChanged: (value) {
+                                  final quantity = int.tryParse(value) ?? 1;
+                                  setState(() {
+                                    _quantity = quantity > 0 ? quantity : 1;
+                                  });
+                                },
+                                placeholder: const Text('1'),
+                              ),
+                            ),
+                            const Gap(12),
+                            Expanded(
+                              child: Select<String>(
+                                value: _selectedUnit,
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    setState(() {
+                                      _selectedUnit = newValue;
+                                    });
+                                  }
+                                },
+                                placeholder: const Text('Chọn đơn vị'),
+                                itemBuilder: (context, item) => Text(item),
+                                popup: const SelectPopup(
+                                  items: SelectItemList(
+                                    children: [
+                                      SelectItemButton(value: 'cái', child: Text('cái')),
+                                      SelectItemButton(value: 'gói', child: Text('gói')),
+                                      SelectItemButton(value: 'hộp', child: Text('hộp')),
+                                      SelectItemButton(value: 'chai', child: Text('chai')),
+                                      SelectItemButton(value: 'kg', child: Text('kg')),
+                                      SelectItemButton(value: 'g', child: Text('g')),
+                                      SelectItemButton(value: 'lít', child: Text('lít')),
+                                      SelectItemButton(value: 'ml', child: Text('ml')),
+                                      SelectItemButton(value: 'lon', child: Text('lon')),
+                                      SelectItemButton(value: 'túi', child: Text('túi')),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ],
-                          ),
-                          child: TextArea(placeholder: const Text('Mô tả thực phẩm (tùy chọn)...'), controller: _descriptionController, expandableHeight: true, initialHeight: 180),
+                            ),
+                          ],
                         ),
                         const Gap(16),
 

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.techpro.green_bite"
+    namespace = "com.techpro.greenbite"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.techpro.green_bite"
+        applicationId = "com.techpro.greenbite"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion  // Required for core library desugaring

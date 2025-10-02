@@ -4,6 +4,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'add_edit_food_screen.dart';
 import 'tag_management_screen.dart';
 import '../models/food_item.dart';
+import '../models/recipe.dart';
 import '../services/database_service.dart';
 
 class FoodListScreen extends StatefulWidget {
@@ -107,7 +108,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
       headers: [
         AppBar(
           title: const Text('GreenBite'),
-          subtitle: const Text('Quản lý thực phẩm'),
+          subtitle: const Text('Tủ bếp của bạn'),
           trailing: [
             OutlineButton(
               density: ButtonDensity.icon,
@@ -145,10 +146,10 @@ class _FoodListScreenState extends State<FoodListScreen> {
             });
           },
           index: _selectedIndex,
-          children: [_buildNavItem('Danh sách', Icons.list), _buildNavItem('Thống kê', Icons.analytics), _buildNavItem('Cài đặt', Icons.settings)],
+          children: [_buildNavItem('Tủ bếp', LucideIcons.apple), _buildNavItem('Thực đơn', Icons.restaurant)],
         ),
       ],
-      child: _selectedIndex == 0 ? _buildFoodListTab() : _buildPlaceholderTab(),
+      child: _selectedIndex == 0 ? _buildFoodListTab() : _buildRecipeTab(),
     );
   }
 
@@ -277,13 +278,20 @@ class _FoodListScreenState extends State<FoodListScreen> {
                                             ),
                                           ),
                                           const Gap(8),
-                                          // Expiry Date
+                                          // Quantity and Expiry Date
+                                          Row(
+                                            children: [
+                                              Text('${item.quantity} ${item.unit}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                                              const Gap(12),
+                                            ],
+                                          ),
+                                          const Gap(6),
                                           Row(
                                             children: [
                                               Icon(Icons.schedule, size: 16, color: _getStatusColor(item)),
                                               const Gap(4),
                                               Text(
-                                                'Hết hạn: ${_formatDate(item.expiryDate)}',
+                                                '${_formatDate(item.expiryDate)}',
                                                 style: TextStyle(color: _getStatusColor(item), fontSize: 13, fontWeight: FontWeight.w500),
                                               ),
                                             ],
@@ -395,18 +403,251 @@ class _FoodListScreenState extends State<FoodListScreen> {
     );
   }
 
-  Widget _buildPlaceholderTab() {
-    String tabName = _selectedIndex == 1 ? 'Thống kê' : 'Cài đặt';
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(_selectedIndex == 1 ? Icons.analytics : Icons.settings, size: 64, color: Colors.black.withValues(alpha: 0.3)),
-          const Gap(16),
-          Text('$tabName').large(),
-          const Gap(8),
-          const Text('Sẽ được phát triển trong tương lai').muted(),
-        ],
+  Widget _buildRecipeTab() {
+    final recipes = Recipe.getDemoRecipes();
+
+    return Column(
+      children: [
+        // Header section
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [const Icon(Icons.restaurant_menu, size: 24), const Gap(8), const Text('Công thức nấu ăn').large().bold()]),
+              const Gap(8),
+              const Text('Gợi ý những món ngon từ nguyên liệu có sẵn').muted(),
+            ],
+          ),
+        ),
+
+        // Recipe categories filter
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: ['Tất cả', 'Món chính', 'Món khai vị', 'Canh/Súp', 'Salad', 'Bánh mì', 'Đồ uống'].map((category) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Chip(
+                    style: category == 'Tất cả' ? const ButtonStyle.primary() : const ButtonStyle.outline(),
+                    onPressed: () {
+                      // TODO: Implement filtering
+                    },
+                    child: Text(category),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
+
+        const Gap(16),
+
+        // Recipes list
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            itemCount: recipes.length,
+            itemBuilder: (context, index) {
+              final recipe = recipes[index];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: Card(
+                  child: GestureDetector(
+                    onTap: () {
+                      _showRecipeDetail(recipe);
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Recipe header with image placeholder
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              // Recipe image placeholder
+                              Container(
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+                                child: const Icon(Icons.restaurant_menu, size: 32, color: Colors.orange),
+                              ),
+                              const Gap(16),
+
+                              // Recipe info
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(recipe.name).large().bold(),
+                                    const Gap(6),
+                                    Text(recipe.description, style: const TextStyle(fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
+                                    const Gap(8),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                          decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+                                          child: Text(
+                                            recipe.category,
+                                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.orange),
+                                          ),
+                                        ),
+                                        const Gap(8),
+                                        Icon(Icons.access_time, size: 14),
+                                        const Gap(4),
+                                        Text(recipe.cookingTime, style: TextStyle(fontSize: 12)),
+                                        const Gap(8),
+                                        Icon(Icons.signal_cellular_alt, size: 14),
+                                        const Gap(4),
+                                        Text(recipe.difficulty, style: TextStyle(fontSize: 12)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Tags
+                        if (recipe.tags.isNotEmpty) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Wrap(
+                              spacing: 6,
+                              runSpacing: 6,
+                              children: recipe.tags.take(3).map((tag) {
+                                return Chip(
+                                  style: const ButtonStyle.outline(),
+                                  child: Text(tag, style: const TextStyle(fontSize: 11)),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          const Gap(16),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showRecipeDetail(Recipe recipe) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(recipe.name).large().bold(),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: MediaQuery.of(context).size.height * 0.6, // Limit height to 60% of screen
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Recipe info
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(color: Colors.orange.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+                      child: Text(
+                        recipe.category,
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.orange),
+                      ),
+                    ),
+                    const Gap(12),
+                    Icon(Icons.access_time, size: 16),
+                    const Gap(4),
+                    Text(recipe.cookingTime),
+                    const Gap(12),
+                    Icon(Icons.signal_cellular_alt, size: 16),
+                    const Gap(4),
+                    Text(recipe.difficulty),
+                  ],
+                ),
+                const Gap(16),
+
+                // Description
+                Text(recipe.description, style: const TextStyle(fontSize: 14)),
+                const Gap(20),
+
+                // Ingredients
+                const Text('Nguyên liệu:').bold(),
+                const Gap(8),
+                ...recipe.ingredients.map(
+                  (ingredient) => Padding(
+                    padding: const EdgeInsets.only(bottom: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('• ', style: TextStyle(fontWeight: FontWeight.bold)),
+                        Expanded(child: Text(ingredient)),
+                      ],
+                    ),
+                  ),
+                ),
+                const Gap(20),
+
+                // Instructions
+                const Text('Cách làm:').bold(),
+                const Gap(8),
+                ...recipe.instructions.asMap().entries.map((entry) {
+                  final index = entry.key + 1;
+                  final instruction = entry.value;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 24,
+                          height: 24,
+                          decoration: BoxDecoration(color: Colors.orange, borderRadius: BorderRadius.circular(12)),
+                          child: Center(
+                            child: Text(
+                              index.toString(),
+                              style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                        const Gap(12),
+                        Expanded(child: Text(instruction)),
+                      ],
+                    ),
+                  );
+                }),
+
+                // Tags
+                if (recipe.tags.isNotEmpty) ...[
+                  const Gap(20),
+                  const Text('Tags:').bold(),
+                  const Gap(8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: recipe.tags.map((tag) {
+                      return Chip(
+                        style: const ButtonStyle.outline(),
+                        child: Text(tag, style: const TextStyle(fontSize: 11)),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+        actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('Đóng'))],
       ),
     );
   }

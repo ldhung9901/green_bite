@@ -9,9 +9,7 @@ import 'services/database_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent),
-  );
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Initialize database and default tags
@@ -19,9 +17,7 @@ Future<void> main() async {
   await databaseService.initializeDefaultTags();
 
   final prefs = await SharedPreferences.getInstance();
-  final hasCompletedOnboarding =
-      (await databaseService.getAllFoodItems()).isNotEmpty &&
-      prefs.getBool('onboarding_completed')!;
+  final hasCompletedOnboarding = (await databaseService.getAllFoodItems()).isNotEmpty && prefs.getBool('onboarding_completed')!;
 
   runApp(MyApp(hasCompletedOnboarding: hasCompletedOnboarding));
 }
@@ -36,11 +32,7 @@ class MyApp extends StatelessWidget {
       title: 'GreenBite',
       themeMode: ThemeMode.system,
       // Localization: enable Flutter's built-in localizations and add Vietnamese
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
+      localizationsDelegates: const [GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate, GlobalCupertinoLocalizations.delegate],
       supportedLocales: const [Locale('vi'), Locale('en')],
       localeResolutionCallback: (locale, supportedLocales) {
         if (locale == null) return supportedLocales.first;
@@ -49,19 +41,25 @@ class MyApp extends StatelessWidget {
         }
         return supportedLocales.first;
       },
-      // Light theme with default Material typography (no custom fontFamily)
+      // Light theme with Roboto font
       theme: ThemeData(
         colorScheme: LegacyColorSchemes.lightGreen(),
         radius: 0.7,
+        typography: Typography.geist(
+          sans: const TextStyle(fontFamily: 'Roboto'),
+          mono: const TextStyle(fontFamily: 'Roboto'),
+        ),
       ),
-      // Dark theme with default Material typography
+      // Dark theme with Roboto font
       darkTheme: ThemeData(
         colorScheme: LegacyColorSchemes.darkGreen(),
         radius: 0.7,
+        typography: Typography.geist(
+          sans: const TextStyle(fontFamily: 'Roboto'),
+          mono: const TextStyle(fontFamily: 'Roboto'),
+        ),
       ),
-      home: hasCompletedOnboarding
-          ? const FoodListScreen()
-          : const OnboardingScreen(),
+      home: hasCompletedOnboarding ? const FoodListScreen() : const OnboardingScreen(),
     );
   }
 }

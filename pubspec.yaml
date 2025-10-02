@@ -45,8 +45,8 @@ dependencies:
   path_provider: ^2.1.1
   
   # Image handling
-  image_picker: ^1.0.7
-  permission_handler: ^11.3.1
+  image_picker: ^1.2.0
+  permission_handler: ^12.0.1 
   intl: ^0.20.2
   
   # Notifications
@@ -54,6 +54,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_tesseract_ocr: ^0.4.30
   google_fonts: ^6.2.1
+  device_info_plus: ^11.5.0
 
 dev_dependencies:
   flutter_test:
@@ -75,7 +76,18 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
+  config:
+    enable-lldb-debugging: false
+  assets:
+    - assets/
+    - assets/tessdata/
+    - assets/fonts/
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/Roboto-Regular.ttf
+        - asset: assets/fonts/Roboto-Bold.ttf
+          weight: 700
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -111,6 +123,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

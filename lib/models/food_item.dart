@@ -18,6 +18,10 @@ class FoodItem {
 
   late List<String> tags;
 
+  int quantity = 1;
+
+  String unit = 'cái';
+
   @Index()
   late DateTime createdAt;
 
