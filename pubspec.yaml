@@ -41,7 +41,8 @@ dependencies:
   
   # Database
   isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
+  isar_flutter_libs:
+    git: https://github.com/Deepjyoti120/isar_flutter_libs.git
   path_provider: ^2.1.1
   
   # Image handling
