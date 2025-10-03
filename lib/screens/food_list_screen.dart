@@ -130,18 +130,6 @@ class _FoodListScreenState extends State<FoodListScreen> {
               },
               child: const Icon(LucideIcons.tag),
             ),
-            const Gap(8),
-
-            OutlineButton(
-              density: ButtonDensity.icon,
-              onPressed: () async {
-                final result = await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => const AddEditFoodScreen()));
-                if (result == true) {
-                  _loadFoodItems();
-                }
-              },
-              child: const Icon(Icons.add),
-            ),
           ],
         ),
         const Divider(),
@@ -178,7 +166,7 @@ class _FoodListScreenState extends State<FoodListScreen> {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle),
-                    child: const Icon(Icons.add, size: 28),
+                    child: const Icon(Icons.add, size: 28, color: Colors.white),
                   ),
                 ),
               ),
@@ -296,128 +284,116 @@ class _FoodListScreenState extends State<FoodListScreen> {
                             ),
                           ],
                         ),
-                        child: Card(
-                          child: GestureDetector(
-                            onTap: () async {
-                              final result = await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => AddEditFoodScreen(foodItem: item)));
-                              if (result == true) {
-                                _loadFoodItems();
-                              }
-                            },
+                        child: GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => AddEditFoodScreen(foodItem: item)));
+                            if (result == true) {
+                              _loadFoodItems();
+                            }
+                          },
+                          child: Card(
+                            padding: const EdgeInsets.all(8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 // Header with Image, Title, and Action Button
+                                // New compact layout row
                                 Padding(
-                                  padding: const EdgeInsets.all(5.0),
+                                  padding: const EdgeInsets.all(4.0),
                                   child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // Larger Image with Status Border
+                                      // Image
                                       Container(
-                                        width: 60,
-                                        height: 60,
+                                        width: 80,
+                                        height: 80,
                                         decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(12),
                                           border: Border.all(color: Colors.black.withValues(alpha: 0.1), width: 0.5),
                                         ),
+                                        clipBehavior: Clip.antiAlias,
                                         child: item.imagePath != null && _imageFileExists(item.imagePath!)
-                                            ? ClipRRect(
-                                                borderRadius: BorderRadius.circular(10),
-                                                child: Image.file(
-                                                  File(item.imagePath!),
-                                                  width: 60,
-                                                  height: 60,
-                                                  fit: BoxFit.cover,
-                                                  errorBuilder: (context, error, stackTrace) {
-                                                    print('Error loading image ${item.imagePath}: $error');
-                                                    return Icon(Icons.restaurant, size: 32, color: _getStatusColor(item));
-                                                  },
-                                                ),
+                                            ? Image.file(
+                                                File(item.imagePath!),
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) => Icon(Icons.restaurant, size: 32, color: _getStatusColor(item)),
                                               )
                                             : Icon(Icons.restaurant, size: 32, color: _getStatusColor(item)),
                                       ),
-                                      const Gap(16),
-
-                                      // Title and Status
+                                      const Gap(12),
+                                      // Content
                                       Expanded(
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(item.name).base().bold(),
-                                            const Gap(6),
-                                            // Status Badge
-                                            Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                              decoration: BoxDecoration(color: _getStatusColor(item), borderRadius: BorderRadius.circular(16)),
-                                              child: Text(
-                                                _getStatusText(item),
-                                                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
-                                              ),
-                                            ),
-                                            const Gap(8),
-                                            // Quantity and Expiry Date
                                             Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text('${item.quantity} ${item.unit}', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-                                                const Gap(12),
-                                              ],
-                                            ),
-                                            const Gap(6),
-                                            Row(
-                                              children: [
-                                                Icon(Icons.schedule, size: 16, color: _getStatusColor(item)),
-                                                const Gap(4),
-                                                Text(
-                                                  '${_formatDate(item.expiryDate)}',
-                                                  style: TextStyle(color: _getStatusColor(item), fontSize: 13, fontWeight: FontWeight.w500),
+                                                // Name and quantity / first tag block
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(item.name).base().semiBold(),
+                                                      const Gap(4),
+                                                      Text('${item.quantity} ${item.unit}').xSmall(),
+                                                      if (item.tags.isNotEmpty) ...[
+                                                        const Gap(7),
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Wrap(
+                                                                spacing: 6,
+                                                                runSpacing: 6,
+                                                                children: item.tags.map((tag) {
+                                                                  return Chip(
+                                                                    style: const ButtonStyle.outline(),
+                                                                    child: Text(tag, style: const TextStyle(fontSize: 12)),
+                                                                  );
+                                                                }).toList(),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Gap(8),
+                                                // Status badge top-right
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                      decoration: BoxDecoration(color: _getStatusColor(item), borderRadius: BorderRadius.circular(16)),
+                                                      child: Text(
+                                                        _getStatusText(item),
+                                                        style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                                                      ),
+                                                    ),
+                                                    const Gap(8),
+                                                    // Expiry date row bottom-right aligned
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.schedule, size: 16, color: Colors.black.withValues(alpha: 0.8)),
+                                                        const Gap(4),
+                                                        Text(_formatDate(item.expiryDate)).xSmall(),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
+                                            const Gap(6),
                                           ],
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-
-                                // Description Section
-                                if (item.description != null && item.description!.isNotEmpty) ...[
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                    child: Container(
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.05), borderRadius: BorderRadius.circular(8)),
-                                      child: Text(item.description!, style: const TextStyle(fontSize: 14, height: 1.4)),
-                                    ),
-                                  ),
-                                  const Gap(12),
-                                ],
-
-                                // Tags Section
-                                if (item.tags.isNotEmpty) ...[
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Gap(6),
-                                        Wrap(
-                                          spacing: 6,
-                                          runSpacing: 6,
-                                          children: item.tags.map((tag) {
-                                            return Chip(
-                                              style: const ButtonStyle.outline(),
-                                              child: Text(tag, style: const TextStyle(fontSize: 12)),
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ] else ...[
-                                  const Gap(16),
-                                ],
                               ],
                             ),
                           ),
